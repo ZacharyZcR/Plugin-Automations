@@ -35,6 +35,7 @@ export interface StepExecutionContext {
   depth: number;
   /** Wall-clock deadline for the whole run. */
   deadlineAt: number;
+  onConfirmationWait?: (elapsedMs: number) => void;
   signal?: AbortSignal;
 }
 

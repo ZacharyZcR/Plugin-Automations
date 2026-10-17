@@ -66,6 +66,12 @@ export async function runAiTask(
       },
       dryRun: context.dryRun,
       deadlineAt: context.deadlineAt,
+      onConfirmationWait: (elapsedMs) => {
+        if (Number.isFinite(elapsedMs) && elapsedMs > 0) {
+          context.deadlineAt += elapsedMs;
+          context.onConfirmationWait?.(elapsedMs);
+        }
+      },
       signal: context.signal,
     });
   } catch (error) {

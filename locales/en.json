@@ -141,7 +141,7 @@
         },
         "autonomy": {
           "report": "Report only",
-          "propose": "Propose a fix for approval"
+          "propose": "Automatically diagnose, fix and verify (risky commands require confirmation)"
         },
         "needsPlugin": "Needs {{plugin}}",
         "offBadge": "Off",

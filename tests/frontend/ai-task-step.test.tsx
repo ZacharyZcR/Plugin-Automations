@@ -89,7 +89,11 @@ describe("Ask AI step", () => {
     expect(runbook.placeholder).toContain("Find out what is filling the disk");
     expect(view.getByText("Runbook")).toBeTruthy();
     expect(view.getByText("What the AI may do")).toBeTruthy();
-    expect(view.getByText("Propose a fix for approval")).toBeTruthy();
+    expect(
+      view.getByText(
+        "Automatically diagnose, fix and verify (risky commands require confirmation)",
+      ),
+    ).toBeTruthy();
     expect(view.getByText("All hosts")).toBeTruthy();
     expect(
       view.getByPlaceholderText("The automation name and host"),

@@ -140,7 +140,7 @@
         },
         "autonomy": {
           "report": "只報告",
-          "propose": "提出修復方案，待核准"
+          "propose": "自動排查、修復並驗證（危險命令需確認）"
         },
         "needsPlugin": "需要 {{plugin}}",
         "offBadge": "已關閉",
