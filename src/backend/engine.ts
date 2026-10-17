@@ -31,6 +31,7 @@ export interface RunRequest {
   depth?: number;
   /** Set for nested runs: the child must belong to the same user. */
   parentUserId?: string;
+  onConfirmationWait?: (elapsedMs: number) => void;
 }
 
 export interface RunOutcome {
@@ -268,6 +269,7 @@ export class AutomationEngine {
       ancestry: [...ancestry, automation.id],
       depth,
       deadlineAt: startedAt + maxRunSeconds * 1000,
+      onConfirmationWait: request.onConfirmationWait,
     };
 
     let status: RunStatus = "success";
@@ -415,6 +417,10 @@ export class AutomationEngine {
           ancestry: context.ancestry,
           depth: context.depth + 1,
           parentUserId: context.userId,
+          onConfirmationWait: (elapsedMs) => {
+            context.deadlineAt += elapsedMs;
+            context.onConfirmationWait?.(elapsedMs);
+          },
         });
 
         const nestedOk = nested.status === "success";

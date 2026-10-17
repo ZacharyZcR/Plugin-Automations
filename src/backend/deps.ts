@@ -88,6 +88,7 @@ export interface AiTaskInput {
   /** A test run: the AI only reports and sends nothing. */
   dryRun: boolean;
   deadlineAt: number;
+  onConfirmationWait?: (elapsedMs: number) => void;
   signal?: AbortSignal;
 }
 

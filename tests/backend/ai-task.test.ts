@@ -180,8 +180,22 @@ describe("ai_task executor", () => {
       },
       dryRun: false,
       deadlineAt: 1_900_000_000_000,
+      onConfirmationWait: expect.any(Function),
       signal,
     });
+  });
+
+  it("excludes confirmation waits from the run and propagates them to a parent", async () => {
+    const run = vi.fn(async (input: any) => {
+      input.onConfirmationWait(60_000);
+      return result();
+    });
+    const { context, runtime } = setup(run);
+    const before = context.deadlineAt;
+    context.onConfirmationWait = vi.fn();
+    await executeStep(aiStep(), context, runtime);
+    expect(context.deadlineAt).toBe(before + 60_000);
+    expect(context.onConfirmationWait).toHaveBeenCalledWith(60_000);
   });
 
   it("passes a dry run through and renders a custom title", async () => {

@@ -34,6 +34,7 @@ export interface AutomationsAccessV1 {
   ) => Promise<
     (AutomationSummary & { definition: AutomationDefinition | null }) | null
   >;
+  setEnabled: (id: number, enabled: boolean) => Promise<void>;
   /**
    * Validates the definition the same way the create route does. Starts
    * disabled unless `enabled` is set, so an automation nobody watched run
@@ -106,6 +107,16 @@ export function createAutomationsService(
       return { ...summary, definition };
     },
 
+    setEnabled: async (id, enabled) => {
+      const userId = actor("setEnabled");
+      if (!(await ctx.rbac.has("edit")))
+        throw new Error("Editing automations needs automations.edit");
+      const row = await repository.findForUser(id, userId);
+      if (!row) throw new Error("Automation not found");
+      await repository.update(id, userId, { enabled });
+      const definition = parseDefinition(row.definition);
+      if (definition) await syncSchedule(repository, id, definition);
+    },
     create: async (input) => {
       const userId = actor("create");
       if (!(await ctx.rbac.has("create"))) {

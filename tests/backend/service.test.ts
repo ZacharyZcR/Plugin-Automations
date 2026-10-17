@@ -69,3 +69,25 @@ describe("automations.access create", () => {
     ).rejects.toThrow(message);
   });
 });
+
+describe("automations.access setEnabled", () => {
+  it("toggles an existing automation without recreating it and enforces ownership", async () => {
+    server = await startServer();
+    server.mock.setActor("alice");
+    const created = await server.service.create({
+      name: "Preset",
+      definition: schedule,
+      enabled: false,
+    });
+    await server.service.setEnabled(created.id, true);
+    expect(stored(created.id).enabled).toBe(1);
+    server.mock.setActor("bob");
+    await expect(server.service.setEnabled(created.id, false)).rejects.toThrow(
+      "not found",
+    );
+    expect(stored(created.id).enabled).toBe(1);
+    server.mock.setActor("alice");
+    await server.service.setEnabled(created.id, false);
+    expect(stored(created.id).enabled).toBe(0);
+  });
+});
